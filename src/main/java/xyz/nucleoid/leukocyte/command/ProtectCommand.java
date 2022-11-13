@@ -8,9 +8,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.command.argument.DimensionArgumentType;
-import net.minecraft.command.argument.GameProfileArgumentType;
+import net.minecraft.command.argument.*;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
@@ -77,6 +75,11 @@ public final class ProtectCommand {
                         .then(AuthorityArgument.argument("authority")
                         .then(argument("level", IntegerArgumentType.integer())
                         .executes(ProtectCommand::setLevel)
+                    )))
+                    .then(literal("data")
+                        .then(AuthorityArgument.argument("authority")
+                        .then(argument("data", NbtCompoundArgumentType.nbtCompound())
+                        .executes(ProtectCommand::setExtraData)
                     )))
                 )
                 .then(literal("exclusion")
@@ -306,6 +309,17 @@ public final class ProtectCommand {
         return Command.SINGLE_SUCCESS;
     }
 
+    private static int setExtraData(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var authority = AuthorityArgument.get(context, "authority");
+        var data = NbtCompoundArgumentType.getNbtCompound(context, "data");
+
+        Leukocyte.get(context.getSource().getServer()).replaceAuthority(authority, authority.withExtraData(data));
+
+        context.getSource().sendFeedback(Text.literal("Set extra data of " + authority.getKey()), true);
+
+        return Command.SINGLE_SUCCESS;
+    }
+
     private static int listAuthorities(CommandContext<ServerCommandSource> context) {
         var leukocyte = Leukocyte.get(context.getSource().getServer());
 
@@ -391,6 +405,9 @@ public final class ProtectCommand {
         if (!rules.isEmpty()) {
             text.append(" Rules:\n").append(rules.clickableDisplay(authority));
         }
+
+        var nbt = authority.getExtraData();
+        text.append(" Extra Data:\n").append(nbt.toString());
 
         context.getSource().sendFeedback(text, false);
 
