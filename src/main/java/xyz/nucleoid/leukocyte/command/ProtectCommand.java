@@ -15,6 +15,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import xyz.nucleoid.leukocyte.Leukocyte;
 import xyz.nucleoid.leukocyte.authority.Authority;
+import xyz.nucleoid.leukocyte.authority.AuthorityShapes;
 import xyz.nucleoid.leukocyte.command.argument.AuthorityArgument;
 import xyz.nucleoid.leukocyte.command.argument.ProtectionRuleArgument;
 import xyz.nucleoid.leukocyte.command.argument.RoleArgument;
@@ -23,6 +24,8 @@ import xyz.nucleoid.leukocyte.roles.PermissionAccessor;
 import xyz.nucleoid.leukocyte.rule.ProtectionRule;
 import xyz.nucleoid.leukocyte.rule.RuleResult;
 import xyz.nucleoid.leukocyte.shape.ProtectionShape;
+import xyz.nucleoid.leukocyte.visualiser.VisualisableShape;
+import xyz.nucleoid.leukocyte.visualiser.Visualiser;
 import xyz.nucleoid.stimuli.EventSource;
 
 import java.util.ArrayList;
@@ -121,6 +124,10 @@ public final class ProtectCommand {
                 .then(literal("display")
                     .then(AuthorityArgument.argument("authority")
                     .executes(ProtectCommand::displayAuthority)
+                ))
+                .then(literal("visualise")
+                    .then(AuthorityArgument.argument("authority")
+                    .executes(ProtectCommand::visualiseAuthority)
                 ))
                 .then(literal("list").executes(ProtectCommand::listAuthorities))
                 .then(literal("test").executes(ProtectCommand::testRulesHere))
@@ -408,6 +415,26 @@ public final class ProtectCommand {
 
         var nbt = authority.getExtraData();
         text.append(" Extra Data:\n").append(nbt.toString());
+
+        context.getSource().sendFeedback(text, false);
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int visualiseAuthority(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var authority = AuthorityArgument.get(context, "authority");
+        var player = context.getSource().getPlayerOrThrow();
+
+        int count = 0;
+        for (AuthorityShapes.Entry entry : authority.getShapes().entries) {
+            var shape = entry.shape();
+            if (shape instanceof VisualisableShape vis) {
+                Visualiser.INSTANCE.addEdges(player, vis.edges());
+                count++;
+            }
+        }
+
+        MutableText text = Text.literal("Visualising the "+ count + " visualisable shapes (out of "+authority.getShapes().entries.length + " total shapes) of '" + authority.getKey() + "' for 30 seconds.\n");
 
         context.getSource().sendFeedback(text, false);
 

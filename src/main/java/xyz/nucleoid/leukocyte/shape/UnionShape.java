@@ -1,14 +1,18 @@
 package xyz.nucleoid.leukocyte.shape;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
+import net.minecraft.util.math.GlobalPos;
+import xyz.nucleoid.leukocyte.visualiser.VisualisableShape;
 import xyz.nucleoid.stimuli.filter.EventFilter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class UnionShape implements ProtectionShape {
+public final class UnionShape implements ProtectionShape, VisualisableShape {
     public static final Codec<UnionShape> CODEC = ProtectionShape.CODEC.listOf().xmap(
             UnionShape::new,
             union -> Arrays.asList(union.scopes)
@@ -76,5 +80,16 @@ public final class UnionShape implements ProtectionShape {
         System.arraycopy(this.scopes, 0, scopes, 0, this.scopes.length);
         scopes[scopes.length - 1] = other;
         return new UnionShape(scopes);
+    }
+
+    @Override
+    public List<Pair<GlobalPos, GlobalPos>> edges() {
+        var list = new ArrayList<Pair<GlobalPos, GlobalPos>>();
+        for (var shape : this.scopes) {
+            if (shape instanceof VisualisableShape vis) {
+                list.addAll(vis.edges());
+            }
+        }
+        return list;
     }
 }

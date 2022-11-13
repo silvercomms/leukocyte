@@ -1,18 +1,23 @@
 package xyz.nucleoid.leukocyte.shape;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import xyz.nucleoid.leukocyte.visualiser.VisualisableShape;
 import xyz.nucleoid.stimuli.filter.EventFilter;
 
-public final class BoxShape implements ProtectionShape {
+import java.util.List;
+
+public final class BoxShape implements ProtectionShape, VisualisableShape {
     public static final Codec<BoxShape> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
                 Identifier.CODEC.xmap(id -> RegistryKey.of(Registry.WORLD_KEY, id), RegistryKey::getValue).fieldOf("dimension").forGetter(scope -> scope.dimension),
@@ -63,5 +68,29 @@ public final class BoxShape implements ProtectionShape {
 
     private MutableText displayPos(BlockPos pos) {
         return Text.literal("(" + pos.getX() + "; " + pos.getY() + "; " + pos.getZ() + ")");
+    }
+
+    @Override
+    public List<Pair<GlobalPos, GlobalPos>> edges() {
+        int minX = this.min.getX();
+        int minY = this.min.getY();
+        int minZ = this.min.getZ();
+        int maxX = this.max.getX();
+        int maxY = this.max.getY();
+        int maxZ = this.max.getZ();
+        return List.of(
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(minX, minY, minZ)), GlobalPos.create(this.dimension, new BlockPos(minX, minY, maxZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(minX, minY, minZ)), GlobalPos.create(this.dimension, new BlockPos(minX, maxY, minZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(minX, minY, minZ)), GlobalPos.create(this.dimension, new BlockPos(maxX, minY, minZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(maxX, maxY, maxZ)), GlobalPos.create(this.dimension, new BlockPos(maxX, maxY, minZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(maxX, maxY, maxZ)), GlobalPos.create(this.dimension, new BlockPos(maxX, minY, maxZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(maxX, maxY, maxZ)), GlobalPos.create(this.dimension, new BlockPos(minX, maxY, maxZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(minX, maxY, minZ)), GlobalPos.create(this.dimension, new BlockPos(maxX, maxY, minZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(minX, maxY, minZ)), GlobalPos.create(this.dimension, new BlockPos(minX, maxY, maxZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(minX, maxY, maxZ)), GlobalPos.create(this.dimension, new BlockPos(minX, minY, maxZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(maxX, maxY, minZ)), GlobalPos.create(this.dimension, new BlockPos(maxX, minY, minZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(maxX, minY, maxZ)), GlobalPos.create(this.dimension, new BlockPos(minX, minY, maxZ))),
+                Pair.of(GlobalPos.create(this.dimension, new BlockPos(maxX, minY, maxZ)), GlobalPos.create(this.dimension, new BlockPos(maxX, minY, minZ)))
+        );
     }
 }
