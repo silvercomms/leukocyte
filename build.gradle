@@ -1,6 +1,7 @@
 plugins {
   id 'fabric-loom' version '0.12-SNAPSHOT'
   id "com.modrinth.minotaur" version "2.+"
+  id 'maven-publish'
 }
 import com.modrinth.minotaur.TaskModrinthUpload
 
@@ -68,4 +69,23 @@ if (System.getenv("MODRINTH")) {
     }
   }
 }
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+    }
+  }
+  repositories {
+    maven {
+      name = "willBlRepositorySilver"
+      url = "https://maven.willbl.dev/silver"
+      credentials(PasswordCredentials)
+      authentication {
+        basic(BasicAuthentication)
+      }
+    }
+  }
+}
+
 
