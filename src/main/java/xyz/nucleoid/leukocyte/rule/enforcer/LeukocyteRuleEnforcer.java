@@ -19,6 +19,7 @@ import xyz.nucleoid.stimuli.event.block.BlockDropItemsEvent;
 import xyz.nucleoid.stimuli.event.block.BlockPlaceEvent;
 import xyz.nucleoid.stimuli.event.block.BlockUseEvent;
 import xyz.nucleoid.stimuli.event.block.DispenserActivateEvent;
+import xyz.nucleoid.stimuli.event.entity.EntityShearEvent;
 import xyz.nucleoid.stimuli.event.entity.EntitySpawnEvent;
 import xyz.nucleoid.stimuli.event.entity.EntityUseEvent;
 import xyz.nucleoid.stimuli.event.item.ItemCraftEvent;
@@ -109,6 +110,9 @@ public final class LeukocyteRuleEnforcer implements ProtectionRuleEnforcer {
                     };
                 });
 
+        this.forRule(events, rules.test(ProtectionRule.SHEAR_ENTITIES))
+                .applySimple(EntityShearEvent.EVENT, rule -> (entity, player, hand, pos) -> rule);
+
         this.applyWorldRules(rules, events);
     }
 
@@ -165,6 +169,9 @@ public final class LeukocyteRuleEnforcer implements ProtectionRuleEnforcer {
 
         this.forRule(events, rules.test(ProtectionRule.IGNITE_TNT))
                 .applySimple(TntIgniteEvent.EVENT, rule -> (world, pos, igniter) -> rule);
+
+        this.forRule(events, rules.test(ProtectionRule.FIREWORK_EXPLODE))
+                .applySimple(FireworkExplodeEvent.EVENT, rule -> firework -> rule);
 
         this.forRule(events, rules.test(ProtectionRule.DISPENSER_ACTIVATE))
                 .applySimple(DispenserActivateEvent.EVENT, rule -> (world, pos, dispenser, slot, stack) -> rule);

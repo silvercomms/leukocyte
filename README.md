@@ -31,6 +31,7 @@ Leukocyte provides various rules that can be applied within authorities. These r
  - `pickup_items` controls whether items can be picked up by players or other entities
  - `unstable_tnt` controls tnt automatically igniting when placed
  - `ignite_tnt` controls whether tnt can be ignited
+ - `firework_explode` controls whether fireworks can explode instead of only fizzling out
  - `dispenser_activate` controls whether dispensers and droppers can be activated
  - `spawn_withers` controls whether withers can be summoned
  - `fire_tick` controls whether fire tick is enabled within the authority. Defaults to gamerule if not set
@@ -38,6 +39,7 @@ Leukocyte provides various rules that can be applied within authorities. These r
  - `ice_melt` controls whether ice and frosted ice melt
  - `snow_fall` controls whether snow can form on surfaces during snowfall
  - `throw_projectiles` controls whether players can throw eggs, snowballs, or tridents
+ - `shear_entities` controls whether entities such as sheep and mooshrooms can be sheared by players and dispensers
  
 To set a rule as `allow` or `deny` on an authority, use `/protect set rule <authority> <rule> <result>`.  
 

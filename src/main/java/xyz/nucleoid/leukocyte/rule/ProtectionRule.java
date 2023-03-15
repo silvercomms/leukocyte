@@ -38,6 +38,7 @@ public final class ProtectionRule {
 
     public static final ProtectionRule UNSTABLE_TNT = register("unstable_tnt");
     public static final ProtectionRule IGNITE_TNT = register("ignite_tnt");
+    public static final ProtectionRule FIREWORK_EXPLODE = register("firework_explode");
     public static final ProtectionRule DISPENSER_ACTIVATE = register("dispenser_activate");
     public static final ProtectionRule SPAWN_WITHER = register("spawn_wither");
 
@@ -50,6 +51,7 @@ public final class ProtectionRule {
     public static final ProtectionRule SPAWN_MONSTERS = register("spawn_monsters");
 
     public static final ProtectionRule THROW_PROJECTILES = register("throw_projectiles");
+    public static final ProtectionRule SHEAR_ENTITIES = register("shear_entities");
 
     public static final ProtectionRule EXPLOSION = register("explosion");
 
