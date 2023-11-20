@@ -22,6 +22,7 @@ public final class ProtectionRule {
 
     public static final ProtectionRule ATTACK = register("attack");
     public static final ProtectionRule PVP = register("pvp");
+    public static final ProtectionRule SPECTATE_ENTITIES = register("spectate_entities");
 
     public static final ProtectionRule PORTALS = register("portals");
     public static final ProtectionRule CRAFTING = register("crafting");
@@ -46,6 +47,7 @@ public final class ProtectionRule {
     public static final ProtectionRule FLUID_FLOW = register("fluid_flow");
     public static final ProtectionRule ICE_MELT = register("ice_melt");
     public static final ProtectionRule SNOW_FALL = register("snow_fall");
+    public static final ProtectionRule CORAL_DEATH = register("coral_death");
 
     public static final ProtectionRule SPAWN_ANIMALS = register("spawn_animals");
     public static final ProtectionRule SPAWN_MONSTERS = register("spawn_monsters");
@@ -54,6 +56,9 @@ public final class ProtectionRule {
     public static final ProtectionRule SHEAR_ENTITIES = register("shear_entities");
 
     public static final ProtectionRule EXPLOSION = register("explosion");
+
+    public static final ProtectionRule BLOCK_RANDOM_TICK = register("block_random_tick");
+    public static final ProtectionRule FLUID_RANDOM_TICK = register("fluid_random_tick");
 
     private final String key;
 
