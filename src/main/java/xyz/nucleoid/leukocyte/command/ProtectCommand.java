@@ -11,6 +11,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
+import net.minecraft.command.argument.NbtCompoundArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
@@ -439,9 +440,8 @@ public final class ProtectCommand {
             }
         }
 
-        MutableText text = Text.literal("Visualising the "+ count + " visualisable shapes (out of "+authority.getShapes().entries.length + " total shapes) of '" + authority.getKey() + "' for 30 seconds.\n");
-
-        context.getSource().sendFeedback(text, false);
+        int finalCount = count;
+        context.getSource().sendFeedback(() -> Text.literal("Visualising the "+ finalCount + " visualisable shapes (out of "+authority.getShapes().entries.length + " total shapes) of '" + authority.getKey() + "' for 30 seconds.\n"), false);
 
         return Command.SINGLE_SUCCESS;
     }
